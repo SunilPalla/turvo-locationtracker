@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="turvo-locationtracker:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/turvo_locationtracker_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="turvo-locationtracker/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="turvo-locationtracker" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

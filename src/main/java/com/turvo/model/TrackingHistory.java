@@ -15,6 +15,7 @@ public class TrackingHistory implements Serializable {
 	private DateTime dateTime;
 	private String deviceId;
 	private String driverId;
+	private String location;
 
 	public String getId() {
 		return id;
@@ -54,5 +55,13 @@ public class TrackingHistory implements Serializable {
 
 	public void setDriverId(String driverId) {
 		this.driverId = driverId;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 }

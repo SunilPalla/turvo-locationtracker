@@ -1,6 +1,7 @@
 package com.turvo.controller;
 
-import com.turvo.model.AssetTracker;
+import com.turvo.model.AssetLocationTracker;
+import com.turvo.model.LocationInfo;
 import com.turvo.model.TrackingHistory;
 import com.turvo.service.AssetTrackingService;
 import org.joda.time.DateTime;
@@ -19,13 +20,13 @@ public class AssetTrackingController {
 	AssetTrackingService assetTrackingService;
 
 	@RequestMapping(value="/asset/save",method = RequestMethod.POST)
-	public ResponseEntity<String> captureAssetInformation(@RequestBody AssetTracker assetTracker) {
-		assetTrackingService.saveAssetTracker(assetTracker);
+	public ResponseEntity<String> captureAssetInformation(@RequestBody AssetLocationTracker assetLocationTracker) {
+		assetTrackingService.saveAssetTracker(assetLocationTracker);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	@RequestMapping(value="/locations",method = RequestMethod.GET)
-	public List<AssetTracker> getLocations() {
+	public List<LocationInfo> getLocations() {
 		return assetTrackingService.getLocations();
 	}
 

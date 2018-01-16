@@ -1,7 +1,7 @@
 package com.turvo.persistence;
 
 import com.turvo.config.MongoConfig;
-import com.turvo.model.AssetTracker;
+import com.turvo.model.AssetLocationTracker;
 import com.turvo.model.TrackingHistory;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -18,13 +18,13 @@ public class LocationTrackerRepositoryImpl implements  LocationTrackerRepository
 
 
 	@Override
-	public void saveAssetTracker(AssetTracker assetTracker) {
-		getMongoTemplate().insert(assetTracker);
+	public void saveAssetTracker(AssetLocationTracker assetLocationTracker) {
+		getMongoTemplate().insert(assetLocationTracker);
 	}
 
 	@Override
-	public List<AssetTracker> getLocations() {
-		return getMongoTemplate().findAll(AssetTracker.class);
+	public List<AssetLocationTracker> getLocations() {
+		return getMongoTemplate().findAll(AssetLocationTracker.class);
 	}
 
 	@Override

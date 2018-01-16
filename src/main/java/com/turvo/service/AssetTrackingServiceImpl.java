@@ -1,12 +1,15 @@
 package com.turvo.service;
 
-import com.turvo.model.AssetTracker;
+import com.turvo.model.AssetLocationTracker;
+import com.turvo.model.LocationInfo;
 import com.turvo.model.TrackingHistory;
 import com.turvo.persistence.LocationTrackerRepository;
 import com.turvo.util.TrackerType;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,31 +31,43 @@ public class AssetTrackingServiceImpl implements AssetTrackingService {
 
 	}
 	@Override
-	public void saveAssetTracker(AssetTracker assetTracker) {
+	public void saveAssetTracker(AssetLocationTracker assetLocationTracker) {
 		//set asset tracker properties
 		//save vehicle asset tracker
-		locationTrackerRepository.saveAssetTracker(getAssetTracker(assetTracker, TrackerType.VEHICLE));
-		locationTrackerRepository.saveHistory(constructTrackingHistory(assetTracker));
+		locationTrackerRepository.saveAssetTracker(getAssetTracker(assetLocationTracker, TrackerType.VEHICLE));
+		locationTrackerRepository.saveHistory(constructTrackingHistory(assetLocationTracker));
 
 		//save mobile asset tracker
-		assetTracker = new AssetTracker();
-		locationTrackerRepository.saveAssetTracker(getAssetTracker(assetTracker, TrackerType.MOBILE));
-		locationTrackerRepository.saveHistory(constructTrackingHistory(assetTracker));
+		assetLocationTracker = new AssetLocationTracker();
+		locationTrackerRepository.saveAssetTracker(getAssetTracker(assetLocationTracker, TrackerType.MOBILE));
+		locationTrackerRepository.saveHistory(constructTrackingHistory(assetLocationTracker));
 	}
 
-	private TrackingHistory constructTrackingHistory(AssetTracker assetTracker) {
+	private TrackingHistory constructTrackingHistory(AssetLocationTracker assetLocationTracker) {
 		TrackingHistory trackingHistory = new TrackingHistory();
 		trackingHistory.setId(UUID.randomUUID().toString());
-		trackingHistory.setDateTime(assetTracker.getDateTime());
-		trackingHistory.setDeviceId(assetTracker.getDeviceId());
-		trackingHistory.setTrackerType(assetTracker.getTrackerType());
-		trackingHistory.setDriverId(assetTracker.getDriverId());
+		trackingHistory.setDateTime(assetLocationTracker.getDateTime());
+		trackingHistory.setDeviceId(assetLocationTracker.getDeviceId());
+		trackingHistory.setTrackerType(assetLocationTracker.getTrackerType());
+		trackingHistory.setDriverId(assetLocationTracker.getDriverId());
+		trackingHistory.setLocation(assetLocationTracker.getLocation());
+
 		return trackingHistory;
 	}
 
 	@Override
-	public List<AssetTracker> getLocations() {
-		return locationTrackerRepository.getLocations();
+	public List<LocationInfo> getLocations() {
+		List<LocationInfo> locations = new ArrayList<>();
+
+		locationTrackerRepository.getLocations().stream()
+				.forEach(assetLocationTracker -> {
+					LocationInfo locationInfo = new LocationInfo(assetLocationTracker.getLocation(),assetLocationTracker.getLatitude(),
+												assetLocationTracker.getLongitude(),assetLocationTracker.getDriverId(),
+												assetLocationTracker.getVehicleNum(),assetLocationTracker.getTrackerType());
+
+					locations.add(locationInfo);
+				});
+		return locations;
 	}
 
 	public LocationTrackerRepository getLocationTrackerRepository() {
@@ -68,24 +83,25 @@ public class AssetTrackingServiceImpl implements AssetTrackingService {
 		return locationTrackerRepository.getConsolidatedPings(fromTime, toTime);
 	}
 
-	private AssetTracker getAssetTracker(AssetTracker assetTracker, TrackerType trackerType) {
-		assetTracker.setTrackerType(trackerType.name());
-		assetTracker.setLocation(DEFAULT_LOCATION);
-		assetTracker.setDateTime(DEFAULT_TIME);
+	private AssetLocationTracker getAssetTracker(AssetLocationTracker assetLocationTracker, TrackerType trackerType) {
+		assetLocationTracker.setTrackerType(trackerType.name());
+		assetLocationTracker.setLocation(DEFAULT_LOCATION);
+		assetLocationTracker.setDateTime(DEFAULT_TIME);
+		assetLocationTracker.setAssetId(UUID.randomUUID().toString());
 
 		if(trackerType.name().equalsIgnoreCase("vehicle")) {
-			assetTracker.setId(UUID.randomUUID().toString());
-			assetTracker.setVehicleSpeed(90);
-			assetTracker.setLatitude(456.78);
-			assetTracker.setLongitude(984.34);
+			assetLocationTracker.setId(UUID.randomUUID().toString());
+			assetLocationTracker.setVehicleSpeed(90);
+			assetLocationTracker.setLatitude(456.78);
+			assetLocationTracker.setLongitude(984.34);
 		}
 		if(trackerType.name().equalsIgnoreCase("mobile")) {
-			assetTracker.setId(UUID.randomUUID().toString());
-			assetTracker.setMobileNumber(DEFAULT_MOBILE_NUMBER);
-			assetTracker.setDeviceId(UUID.randomUUID().toString());
-			assetTracker.setDriverId(UUID.randomUUID().toString());
-			assetTracker.setVehicleNum(UUID.randomUUID().toString());
+			assetLocationTracker.setId(UUID.randomUUID().toString());
+			assetLocationTracker.setMobileNumber(DEFAULT_MOBILE_NUMBER);
+			assetLocationTracker.setDeviceId(UUID.randomUUID().toString());
+			assetLocationTracker.setDriverId(UUID.randomUUID().toString());
+			assetLocationTracker.setVehicleNum(UUID.randomUUID().toString());
 		}
-		return assetTracker;
+		return assetLocationTracker;
 	}
 }

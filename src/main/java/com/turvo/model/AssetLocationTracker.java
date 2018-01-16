@@ -6,11 +6,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 
-@Document(collection="assettracker")
-public class AssetTracker implements Serializable {
+@Document(collection="asset_locationtracker")
+public class AssetLocationTracker implements Serializable {
 
 	@Id
 	private String id;
+	private String assetId;
 	private Double latitude;
 	private Double longitude;
 	private String location;
@@ -28,6 +29,14 @@ public class AssetTracker implements Serializable {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getAssetId() {
+		return assetId;
+	}
+
+	public void setAssetId(String assetId) {
+		this.assetId = assetId;
 	}
 
 	public Double getLatitude() {
@@ -112,8 +121,9 @@ public class AssetTracker implements Serializable {
 
 	@Override
 	public String toString() {
-		return "AssetTracker{" +
+		return "AssetLocationTracker{" +
 					   "id='" + id + '\'' +
+					   ", assetId='" + assetId + '\'' +
 					   ", latitude=" + latitude +
 					   ", longitude=" + longitude +
 					   ", location='" + location + '\'' +
